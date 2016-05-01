@@ -25,8 +25,6 @@ Using recorder.js module to record audio input from user and send to parsing
   <iron-icon icon='av:stop'></iron-icon>
   Stop Recording</paper-button>
 </p>
-<ul id='recordingslist'></ul>
-
 </template>
 
 <script>
@@ -34,16 +32,10 @@ Polymer({
   is: 'my-recorder'
 });
 // Initializing variables
-var rec;
+var audio;
+var AudioContext;
+var audioCtx;
 var compositionName;
-var recordingslist;
-var audio = document.querySelector('audio');
-window.URL = window.URL || window.webkitURL;
-// Creating Audio Context using Web Audio API
-navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia ||
- navigator.mozGetUserMedia || navigator.msGetUserMedia;
-var AudioContext = window.AudioContext || window.webkitAudioContext;
-var audioCtx = new AudioContext();
 
 function saveName() {
   if (compositionName === '') {
@@ -64,11 +56,15 @@ var onFail = function(e) {
 var onSuccess = function(s) {
   console.log('onSuccess');
   var mediaStreamSource = audioCtx.createMediaStreamSource(s);
+  console.log('recording started');
+
+  /*
   // Recording Begins
   // should be 'new Recorder' but kept there to pass JSHint
   rec = new window.Recorder(mediaStreamSource);
   rec.record();  
-  console.log('recording started');
+  */
+
   // Comment/Uncomment to allow real-time playback for users
   //mediaStreamSource.connect(audioCtx.destination);
 };
@@ -77,8 +73,17 @@ var onSuccess = function(s) {
 function startRecording(button) {
   if (navigator.getUserMedia) {
     button.disabled = true;
-    navigator.getUserMedia({audio: true}, onSuccess, onFail);
     button.nextElementSibling.disabled = false;
+
+    audio = document.querySelector('audio');
+    window.URL = window.URL || window.webkitURL;
+    // Creating Audio Context using Web Audio API
+    navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+     navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    AudioContext = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AudioContext();
+
+    navigator.getUserMedia({audio: true}, onSuccess, onFail);
   } else {
     console.log('navigator.getUserMedia not present');
   }
@@ -87,8 +92,10 @@ function startRecording(button) {
 function stopRecording(button) {
   button.disabled = true;
   button.previousElementSibling.disabled = false;
-  rec.stop();
   console.log('Recording Stopped!');
+
+  /*
+  rec.stop();
   rec.exportWAV(function(blob) {
     var url = URL.createObjectURL(blob);
     var li = document.createElement('li');
@@ -104,6 +111,7 @@ function stopRecording(button) {
     recordingslist.appendChild(li);
   });
   rec.clear();
+  */
 }
 </script>
 </dom-module>
