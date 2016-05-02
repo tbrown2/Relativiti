@@ -64,6 +64,7 @@ code { color: blue; padding: 2px;}
     <span id='detune_amt'>--</span><span id='flat' display='inline'> &#9837;</span><span id='sharp'> &#9839;</span>
   </div>
 </div>
+<p><canvas id='tunerCanvas' width="500" height="225"></canvas></p>
 </template>
 
 <script>
@@ -74,12 +75,10 @@ var canvasCtx;
 function init() {
   tunerCanvas = document.getElementById('tunerCanvas');
   canvasCtx = tunerCanvas.getContext('2d');
-  console.log('canvas initialized');
 }
 Polymer({
   is: 'my-tuner',
   ready: function() {
-    console.log(document.getElementsByTagName('tunerCanvas'));
     window.onload = function() {
       init();
     };
@@ -103,10 +102,10 @@ analyser.getByteFrequencyData(dataArray);
 function drawCanvas() {
   var drawVisual = requestAnimationFrame(drawCanvas);
   analyser.getByteTimeDomainData(dataArray);
-  canvasCtx.fillStyle = 'rgb(0, 0, 0)';
+  canvasCtx.fillStyle = 'rgb(207, 216, 220)';
   canvasCtx.fillRect(0, 0, tunerCanvas.width, tunerCanvas.height);
   canvasCtx.lineWidth = 2;
-  canvasCtx.strokeStyle = 'rgb(100, 32, 32)';
+  canvasCtx.strokeStyle = 'rgb(255, 82, 82)';
   canvasCtx.beginPath();
   var sliceWidth = tunerCanvas.width * 1.0 / bufferLength;
   var x = 0;
@@ -145,6 +144,6 @@ if (navigator.getUserMedia) {
   console.log('navigator.getUserMedia not present');
 }
 // Draw it!
-drawCanvas();
+setTimeout(function() {drawCanvas();}, 750);
 </script>
 </dom-module>
